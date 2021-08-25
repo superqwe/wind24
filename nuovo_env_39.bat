@@ -1,0 +1,1 @@
+"C:\Program Files\Python39\python.exe" -m venv env_wind24

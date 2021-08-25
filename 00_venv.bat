@@ -1,0 +1,1 @@
+.\env_wind24\Scripts\activate
