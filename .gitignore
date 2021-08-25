@@ -1,5 +1,7 @@
 # Environments
 env_wind24/
+.git/
+.idea/
 
 # Project
-.idea/
+html/
