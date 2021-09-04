@@ -3,41 +3,28 @@
 import fileinput
 import glob
 import os
+import sqlite3
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from unicodedata import normalize
 
+ANNO = 2021
+MESE = 3
+
 PATH_BASE = r'D:\Studio\Python\wind24\W'
-
 N2_KM_H = 1.852
-
-
-# FIN = r'D:\Studio\Python\wind24\w\2103\210301a.htm'
-#
-# table_MN = pd.read_html(FIN)
-# df = table_MN[0]
-# df['V.Media'].replace(' nodi', '', regex=True, inplace=True)
-#
-# df = df[:-2]
-# df = df[['Data', 'V.Media', 'Gradi']]
-#
-# df = df.astype({'V.Media': 'float'})
-#
-# df['v'] = df['V.Media'] * N2_KM_H
-# df.drop(columns=['V.Media'], inplace=True)
-# print(df)
 
 
 def lista_dir_mesi():
     ldir = os.listdir(PATH_BASE)
-    path_dir = [os.path.join(PATH_BASE, x) for x in ldir]
+    path_dir = [os.path.join(PATH_BASE, x) for x in ldir if os.path.isdir(os.path.join(PATH_BASE, x))]
     return path_dir
 
 
 def leggi_dati(nfile):
-    print(nfile)
+    # print(nfile)
     table_MN = pd.read_html(nfile)
     df = table_MN[0]
     df['V.Media'].replace(' nodi', '', regex=True, inplace=True)
@@ -73,21 +60,28 @@ def leggi_dati(nfile):
     ]
     df['dir'] = np.select(conditions, direzioni, default=None)
 
+    df.loc[df['v'] < 5.0, 'dir'] = 'C'
+
     # df = df[['Data', 'v', 'Gradi', 'Direzione', 'dir']]
     df = df[['Data', 'v', 'dir']]
+    # print(df)
     return (df)
 
 
 def analizza_mese(df):
-    pass
+    a = df[df['Data'] == '01/03/2021']
+    b = a.groupby('dir').count()
+    print(a.groupby('dir').count())
+    print('---', a.dir.mode(), '\n' * 5)
+
+    return
 
 
 if __name__ == '__main__':
-    lista_dir_mesi()
-
     df = pd.DataFrame(columns=['Data', 'v', 'dir'])
 
     for mese in lista_dir_mesi():
+        print('\n---' * 3, mese)
         os.chdir(mese)
         lhtml = glob.glob('*.htm')
 
@@ -98,6 +92,5 @@ if __name__ == '__main__':
 
         df = pd.concat(frames)
 
-        analizza_mese(df)
-
+        analizza_mese(df, ANNO, MESE)
         break
