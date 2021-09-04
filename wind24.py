@@ -1,5 +1,7 @@
 # https://www.wind24.it/taranto/storico
 # https://pbpython.com/pandas-html-table.html
+import calendar
+import datetime
 import fileinput
 import glob
 import os
@@ -9,6 +11,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from unicodedata import normalize
+
+from pprint import pprint as pp
 
 ANNO = 2021
 MESE = 3
@@ -48,16 +52,7 @@ def leggi_dati(nfile):
         (df['Gradi'] > 270 - dg) & (df['Gradi'] <= 270 + dg),
         (df['Gradi'] > 315 - dg) & (df['Gradi'] <= 315 + dg),
     ]
-    direzioni = [
-        'N',
-        'NE',
-        'E',
-        'SE',
-        'S',
-        'SO',
-        'O',
-        'NO'
-    ]
+    direzioni = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO']
     df['dir'] = np.select(conditions, direzioni, default=None)
 
     df.loc[df['v'] < 5.0, 'dir'] = 'C'
@@ -68,11 +63,31 @@ def leggi_dati(nfile):
     return (df)
 
 
-def analizza_mese(df):
-    a = df[df['Data'] == '01/03/2021']
-    b = a.groupby('dir').count()
-    print(a.groupby('dir').count())
-    print('---', a.dir.mode(), '\n' * 5)
+def analizza_mese(df, anno, mese):
+    data_inizio = datetime.date(anno, mese, 1)
+    data_fine = datetime.date(anno, mese, calendar.monthrange(anno, mese)[1])
+    date_range = pd.date_range(data_inizio, data_fine)
+
+    dati = []
+    for giorno in date_range:
+        data = giorno.strftime('%d/%m/%Y')
+        df1 = df[df['Data'] == data]
+
+        # velocità media
+        v = df1['v'].mean()
+
+        if np.isnan(v) or v < 5.0:
+            direzione = 'V'
+        else:
+            # direzione dominante
+            # print(df1.groupby('dir').count())
+            direzione = df1.dir.mode().values[0]
+            print(data, '---', direzione, '\n' * 3)
+
+        #
+        dati.append([data, v, direzione])
+
+    pp(dati)
 
     return
 
