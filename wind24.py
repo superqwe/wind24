@@ -8,17 +8,16 @@ from unicodedata import normalize
 
 N2_KM_H = 1.852
 
-FIN = r'D:\Studio\Python\wind24\html\210301a.htm'
+FIN = r'D:\Studio\Python\wind24\w\2103\210301a.htm'
 table_MN = pd.read_html(FIN)
 df = table_MN[0]
-df['V.Media'].replace(' nodi','', regex=True, inplace=True)
+df['V.Media'].replace(' nodi', '', regex=True, inplace=True)
 
 df = df[:-2]
+df = df[['Data', 'V.Media', 'Gradi']]
 
-df.astype({'V.Media': 'float'})
+df = df.astype({'V.Media': 'float'})
 
-print (df.dtypes)
-
-##df['v'] = float(df['V.Media'])
-##
-##print(df)
+df['v'] = df['V.Media'] * N2_KM_H
+df.drop(columns=['V.Media'], inplace=True)
+print(df)
