@@ -29,9 +29,27 @@ def leggi_dati():
 
 
 def gradi2settore(df):
-    pass
+    dg = 45 / 2
+    conditions = [
+        (df['DIR'] > 315 + dg) | (df['DIR'] <= 45 - dg),
+        (df['DIR'] > 45 - dg) & (df['DIR'] <= 45 + dg),
+        (df['DIR'] > 90 - dg) & (df['DIR'] <= 90 + dg),
+        (df['DIR'] > 135 - dg) & (df['DIR'] <= 135 + dg),
+        (df['DIR'] > 180 - dg) & (df['DIR'] <= 180 + dg),
+        (df['DIR'] > 225 - dg) & (df['DIR'] <= 225 + dg),
+        (df['DIR'] > 270 - dg) & (df['DIR'] <= 270 + dg),
+        (df['DIR'] > 315 - dg) & (df['DIR'] <= 315 + dg),
+    ]
+    direzioni = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO']
+    df['dir'] = np.select(conditions, direzioni, default=None)
+
+    df.rename(columns={'DATA': 'data', 'ORA': 'ora', 'DIR': 'gradi', 'VEL': 'vel'}, inplace=True)
+
+    df.loc[df['vel'] < 5.0, 'dir'] = 'C'
+
+    return df
 
 
 if __name__ == '__main__':
     dati = leggi_dati()
-    gradi2settore(dati)
+    dati = gradi2settore(dati)
