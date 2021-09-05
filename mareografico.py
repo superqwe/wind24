@@ -65,14 +65,15 @@ def analizza_mese(df, anno=ANNO, mese=MESE):
     for giorno in date_range:
         data = int(giorno.strftime('%Y%m%d'))
         df1 = df[df['data'] == data]
+        df1['vel1'] = df1['vel'].multiply(3.6)
 
         # velocità media
-        v = df1['vel'].mean()
+        v = df1['vel1'].mean()
 
-        if False:
-            pass
-        # if np.isnan(v) or v < 5.0:
-        #     direzione = 'V'
+        # if False:
+        #     pass
+        if np.isnan(v) or v < 5.0:
+            direzione = 'Variabile'
         else:
             # direzione dominante
             print(df1.groupby('dir').count())
@@ -94,8 +95,8 @@ def analizza_mese(df, anno=ANNO, mese=MESE):
 
 
 def scrivi_dati(dati):
-    righi = ['%s\t%.1f\t%s' % (data, vel, settore) for data, vel, settore in dati]
-    tabella = '\n'.join(righi)
+    righi = ['%s\t%s\t%.1f' % (data, settore, vel) for data, vel, settore in dati]
+    tabella = '\n'.join(righi).replace('.', ',')
     print(tabella)
 
 
