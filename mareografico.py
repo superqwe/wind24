@@ -1,5 +1,10 @@
 # https://www.mareografico.it/?session=0S335644337466B66NV67Z71&syslng=ita&sysmen=-1&sysind=-1&syssub=-1&sysfnt=0&code=STAZ&idst=1C&idreq=3@4@2
 
+# select sum(vel) / count(vel) * 3.6
+# from ispra
+# where data between 20210301 and 20210399
+
+
 import calendar
 import datetime
 import glob
@@ -11,7 +16,7 @@ import pandas as pd
 import sqlite3 as db
 
 ANNO = 2021
-MESE = 3
+MESE = 7
 
 PATH = r'D:\Studio\Python\wind24\mareografico'
 
@@ -46,7 +51,7 @@ def gradi2settore(df):
 
     df.rename(columns={'DATA': 'data', 'ORA': 'ora', 'DIR': 'gradi', 'VEL': 'vel'}, inplace=True)
 
-    df.loc[df['vel'] < 5.0, 'dir'] = 'C'
+    df.loc[df['vel'] < (5.0 / 3.6), 'dir'] = 'C'
 
     return df
 
