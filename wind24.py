@@ -2,17 +2,12 @@
 # https://pbpython.com/pandas-html-table.html
 import calendar
 import datetime
-import fileinput
 import glob
 import os
-import sqlite3
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from unicodedata import normalize
-
 from pprint import pprint as pp
+
+import numpy as np
+import pandas as pd
 
 ANNO = 2021
 MESE = 3
