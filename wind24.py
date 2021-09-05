@@ -80,8 +80,9 @@ def analizza_mese(df, anno, mese):
             direzione = 'V'
         else:
             # direzione dominante
-            # print(df1.groupby('dir').count())
-            direzione = df1.dir.mode().values[0]
+            print(df1.groupby('dir').count())
+            df2 = df1.drop(df1[df1['dir'] == 'C'].index)
+            direzione = df2.dir.mode().values[0]
             print(data, '---', direzione, '\n' * 3)
 
         #
