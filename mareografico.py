@@ -47,11 +47,10 @@ def gradi2settore(df):
         (df['DIR'] > 315 - dg) & (df['DIR'] <= 315 + dg),
     ]
     direzioni = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO']
-    df['dir'] = np.select(conditions, direzioni, default=None)
+    df['settore'] = np.select(conditions, direzioni, default=None)
+    df['velocita'] = df['VEL'] * 3.6
 
-    df.rename(columns={'DATA': 'data', 'ORA': 'ora', 'DIR': 'gradi', 'VEL': 'vel'}, inplace=True)
-
-    df.loc[df['vel'] < (5.0 / 3.6), 'dir'] = 'C'
+    df.loc[df['velocita'] < 5.0, 'settore'] = 'C'
 
     return df
 
@@ -69,11 +68,11 @@ def analizza_mese(df, anno=ANNO, mese=MESE):
     dati = []
     for giorno in date_range:
         data = int(giorno.strftime('%Y%m%d'))
-        df1 = df[df['data'] == data]
-        df1['vel1'] = df1['vel'].multiply(3.6)
+        df1 = df[df['DATA'] == data]
+        # df1['vel1'] = df1['vel'].multiply(3.6)
 
         # velocità media
-        v = df1['vel1'].mean()
+        v = df1['velocita'].mean()
 
         # if False:
         #     pass
@@ -81,11 +80,11 @@ def analizza_mese(df, anno=ANNO, mese=MESE):
             direzione = 'Variabile'
         else:
             # direzione dominante
-            print(df1.groupby('dir').count())
-            df2 = df1.drop(df1[df1['dir'] == 'C'].index)
+            print(df1.groupby('settore').count())
+            df2 = df1.drop(df1[df1['settore'] == 'C'].index)
 
             try:
-                direzione = df2.dir.mode().values[0]
+                direzione = df2.settore.mode().values[0]
             except IndexError:
                 print('***', 'tutto il giorno calma di vento')
                 direzione = 'Variabile'
@@ -111,3 +110,4 @@ if __name__ == '__main__':
     salva_sqlite(dati)
     dati = analizza_mese(dati)
     scrivi_dati(dati)
+    print('ciao')
