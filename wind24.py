@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 ANNO = 2021
-MESE = 3
+MESE = 8
 
 PATH_BASE = r'D:\Studio\Python\wind24\W'
 N2_KM_H = 1.852
@@ -27,10 +27,12 @@ def leggi_dati(nfile):
     table_MN = pd.read_html(nfile)
     df = table_MN[0]
     df['V.Media'].replace(' nodi', '', regex=True, inplace=True)
+    df['Temp'].replace('°C', '', regex=True, inplace=True)
 
     df = df[:-2]
 
     df = df.astype({'V.Media': 'float'})
+    df = df.astype({'Temp': 'int'})
 
     # velocità in km/h
     df['v'] = df['V.Media'] * N2_KM_H
@@ -53,7 +55,7 @@ def leggi_dati(nfile):
     df.loc[df['v'] < 5.0, 'dir'] = 'C'
 
     # df = df[['Data', 'v', 'Gradi', 'Direzione', 'dir']]
-    df = df[['Data', 'v', 'dir']]
+    df = df[['Data', 'v', 'dir', 'Temp']]
     # print(df)
     return (df)
 
@@ -80,8 +82,10 @@ def analizza_mese(df, anno, mese):
             direzione = df2.dir.mode().values[0]
             print(data, '---', direzione, '\n' * 3)
 
+        # temperatura media
+        temperatura_media = df1['Temp'].mean()
         #
-        dati.append([data, v, direzione])
+        dati.append([data, v, direzione, temperatura_media])
 
     pp(dati)
 
@@ -104,4 +108,4 @@ if __name__ == '__main__':
         df = pd.concat(frames)
 
         analizza_mese(df, ANNO, MESE)
-        break
+        # break

@@ -16,7 +16,7 @@ import pandas as pd
 import sqlite3 as db
 
 ANNO = 2021
-MESE = 7
+MESE = 8
 
 PATH = r'D:\Studio\Python\wind24\mareografico'
 
