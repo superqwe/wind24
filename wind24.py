@@ -1,5 +1,7 @@
 # https://www.wind24.it/taranto/storico
 # https://pbpython.com/pandas-html-table.html
+# http://meteotaranto.org/wxhistory.php?date=202109
+
 import calendar
 import datetime
 import glob
@@ -10,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 ANNO = 2021
-MESE = 8
+MESE = 9
 
 PATH_BASE = r'D:\Studio\Python\wind24\W'
 N2_KM_H = 1.852
@@ -57,7 +59,7 @@ def leggi_dati(nfile):
     # df = df[['Data', 'v', 'Gradi', 'Direzione', 'dir']]
     df = df[['Data', 'v', 'dir', 'Temp']]
     # print(df)
-    return (df)
+    return df
 
 
 def analizza_mese(df, anno, mese):
@@ -84,10 +86,18 @@ def analizza_mese(df, anno, mese):
 
         # temperatura media
         temperatura_media = df1['Temp'].mean()
-        #
-        dati.append([data, v, direzione, temperatura_media])
+        temperatura_max = df1['Temp'].max()
+        temperatura_min = df1['Temp'].min()
 
-    pp(dati)
+        #
+        dati.append([data, v, direzione, temperatura_media, temperatura_min, temperatura_max])
+
+    print('      Data\t Vel   Dir\tt_med\tt_min\tt_max')
+    for rigo in dati:
+        # print(tuple(rigo))
+        print('%s\t%4.1f\t%2s\t%4.1f\t%4.1f\t%4.1f' % tuple(rigo))
+
+    # pp(dati)
 
     return
 

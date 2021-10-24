@@ -16,7 +16,7 @@ import pandas as pd
 import sqlite3 as db
 
 ANNO = 2021
-MESE = 8
+MESE = 9
 
 PATH = r'D:\Studio\Python\wind24\mareografico'
 
@@ -110,4 +110,3 @@ if __name__ == '__main__':
     salva_sqlite(dati)
     dati = analizza_mese(dati)
     scrivi_dati(dati)
-    print('ciao')
