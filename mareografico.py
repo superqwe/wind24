@@ -16,7 +16,7 @@ import pandas as pd
 import sqlite3 as db
 
 ANNO = 2021
-MESE = 9
+MESE = 10
 
 PATH = r'D:\Studio\Python\wind24\mareografico'
 
@@ -89,17 +89,31 @@ def analizza_mese(df, anno=ANNO, mese=MESE):
                 print('***', 'tutto il giorno calma di vento')
                 direzione = 'Variabile'
 
-            print(data, '---', direzione, '\n' * 3)
+            print(data, '---', direzione, '\n')
 
+        # temperature
+        t_med = df1['TEMP'].mean()
+        t_min = df1['TEMP'].min()
+        t_max = df1['TEMP'].max()
+
+        # pressione
+        press = df1['PRESSIONE'].mean()
+
+        # umidità
+        ur = df1['UMIDITA'].mean()
+
+        print(data, '%.1f^C\t%.1f^C\t%.1f^C\t%.1fhPa\t%.1f%%' % (t_med, t_min, t_max, press, ur), '\n' * 3)
         #
-        dati.append([giorno.strftime('%d/%m/%Y'), v, direzione])
+        dati.append([giorno.strftime('%d/%m/%Y'), v, direzione, t_med, t_min, t_max, press, ur])
 
     # pp(dati)
     return dati
 
 
 def scrivi_dati(dati):
-    righi = ['%s\t%s\t%.1f' % (data, settore, vel) for data, vel, settore in dati]
+    righi = ['%s\t%.1f\t%.1f\t%.1f\t%.1f\t%.1f\t%s\t%.1f' % (
+        data, press, t_med, t_min, t_max, ur, settore, vel) for
+             (data, vel, settore, t_med, t_min, t_max, press, ur) in dati]
     tabella = '\n'.join(righi).replace('.', ',')
     print(tabella)
 

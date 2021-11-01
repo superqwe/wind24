@@ -1,6 +1,7 @@
 # https://www.wind24.it/taranto/storico
 # https://pbpython.com/pandas-html-table.html
 # http://meteotaranto.org/wxhistory.php?date=202109
+# https://www.3bmeteo.com/meteo/taranto/storico/202110
 
 import calendar
 import datetime
@@ -12,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 ANNO = 2021
-MESE = 9
+MESE = 10
 
 PATH_BASE = r'D:\Studio\Python\wind24\W'
 N2_KM_H = 1.852
